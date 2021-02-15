@@ -1,0 +1,58 @@
+FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
+LABEL maintainer="siwazaki@nefrock.com"
+
+ENV LC_ALL "C.UTF-8"
+ENV LANG "C.UTF-8"
+# For tzdata dependent libs
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    zip \
+    wget \
+    openssl \
+    file \
+    curl \
+    zlib1g-dev \
+    libsm-dev \
+    libglib2.0-dev \
+    libxrender-dev \
+    libxext-dev \
+    ca-certificates \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    libssl-dev \
+    libsndfile1-dev \
+    emacs
+
+RUN apt install -y --no-install-recommends sox swig pkg-config libflac-dev libogg-dev libvorbis-dev libboost-dev \
+    libsndfile1-dev libboost-all-dev cmake
+
+RUN apt install -y --no-install-recommends portaudio19-dev
+
+RUN rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/initialization
+RUN pip3 install --upgrade pip
+ADD requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+RUN pip3 install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio===0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+
+ADD requirements-ext.txt requirements-ext.txt
+RUN pip3 install -r requirements-ext.txt
+
+RUN apt update
+RUN apt install -y --no-install-recommends libsndfile1 ffmpeg
+RUN pip install Cython
+RUN pip install nemo_toolkit[all]==1.0.0b3
+
+
+RUN mkdir -p /root/.jupyter
+ADD jupyter_notebook_config.py /root/.jupyter/
+
+WORKDIR /workspace

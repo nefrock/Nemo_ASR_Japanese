@@ -1,0 +1,38 @@
+version: "2.4"
+services:
+  workspace:
+    container_name: nemo-japanese-workspace
+    build:
+      context: .
+      dockerfile: Dockerfile.asr
+    shm_size: "32gb"
+    runtime: nvidia
+    user: root
+    tty: true
+    volumes:
+      - .:/workspace
+      - /opt/storage:/opt/storage
+    environment:
+      GRANT_SUDO: "yes"
+      PYTHONPATH: /workspace
+  jupyter:
+    container_name: nemo-japanese-vocoder-jupyter
+    build:
+      context: .
+      dockerfile: Dockerfile.asr
+    runtime: nvidia
+    user: root
+    ports:
+      - "9102:8888"
+    volumes:
+      - .:/workspace
+      - /opt/storage:/opt/storage
+    environment:
+      GRANT_SUDO: "yes"
+    command: jupyter lab --allow-root --config=/root/.jupyter/jupyter_notebook_config.py
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.168.230.0/24

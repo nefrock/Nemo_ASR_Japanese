@@ -1,0 +1,10 @@
+pytorch-lightning>=1.0.5
+torch-stft
+jupyterlab
+docopt
+tqdm
+tensorboardX
+pyworld
+matplotlib
+pyaudio
+h5py
