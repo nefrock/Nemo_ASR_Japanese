@@ -42,7 +42,7 @@ trained_models/QuartzNet15x5/2021-01-29_07-37-24: CSJで学習 かなりアン�
 
 NeMo本体は/src/NeMoに置いてあるとする.
 
-
+- DNS: /opt/storage/datasets/audio/noise/DNS-Challenge (https://github.com/microsoft/DNS-Challenge)
 
 #### 使い方
 
